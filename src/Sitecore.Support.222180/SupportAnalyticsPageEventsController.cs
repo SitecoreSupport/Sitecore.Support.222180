@@ -1,4 +1,4 @@
-﻿namespace Sitecore.Cintel.Endpoint
+﻿namespace Sitecore.Support.Cintel.Endpoint
 {
   using Sitecore;
   using Sitecore.Cintel.Configuration;
@@ -18,15 +18,18 @@
   using System.Net.Http.Headers;
   using System.Runtime.InteropServices;
   using System.Web.Http;
+  using Sitecore.Cintel.Endpoint;
+  using System.Globalization;
 
   [AuthorizedReportingUserFilter]
-  public class AnalyticsPageEventsController : ApiController
+  public class SupportAnalyticsPageEventsController : ApiController
   {
     public object GetImage(Guid pageEventId, int w = 0, int h = 0)
     {
       byte[] imageData;
       string mimeType;
-      if (ServiceLocator.ServiceProvider.GetDefinitionManagerFactory().GetDefinitionManager<IPageEventDefinition>().Get(pageEventId, Context.Culture) == null)
+      // The fix: use CultureInfo.InvariantCulture instead of the culture of the context user
+      if (ServiceLocator.ServiceProvider.GetDefinitionManagerFactory().GetDefinitionManager<IPageEventDefinition>().Get(pageEventId, CultureInfo.InvariantCulture) == null)
       {
         IMarketingImage image1 = ImageHelper.GetImageFromCoreDatabase(Guid.Parse(CustomerIntelligenceConfig.DefaultImageIds.PageEvent), w, h);
         imageData = image1.ImageData;
@@ -39,7 +42,8 @@
         message1.StatusCode = HttpStatusCode.OK;
         return message1;
       }
-      Item mediaItem = ((Sitecore.Data.Fields.ImageField)Context.Database.GetItem(new ID(pageEventId)).Fields["Event Image"]).MediaItem;
+      // The fix: referencing to the field with icon by using id instead of name
+      Item mediaItem = ((Sitecore.Data.Fields.ImageField)(Context.Database.GetItem(new ID(pageEventId)).Fields[new ID("{0CF2654B-6E8B-44EB-9555-D2458B8092A5}")])).MediaItem;
       if (mediaItem == null)
       {
         IMarketingImage image2 = ImageHelper.GetImageFromCoreDatabase(Guid.Parse(CustomerIntelligenceConfig.DefaultImageIds.PageEvent), w, h);

@@ -78,11 +78,12 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnalyticsPageEventsController.cs" />
+    <Compile Include="InitializeRoutes.cs" />
+    <Compile Include="SupportAnalyticsPageEventsController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Config\Include\zzz\Sitecore.Support.222180.config" />
+    <Content Include="App_Config\Sitecore\zzz\Sitecore.Support.222180.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
